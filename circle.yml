@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: python:3.7
+    working_directory: "~/pxa/"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cache-{{ .Branch }}
+            - cache-master
+      - run:
+          name: Install Dependencies
+          command: pip install -r requirements-dev.txt
+      - run:
+          name: Run lint
+          command: make lint
+      - run:
+          name: Unit tests
+          command: make coverage
+      - run:
+          name: Run coveralls
+          command: coveralls
