@@ -1,6 +1,6 @@
 import unittest
 
-from pxa import create_app
+from pxa import create_app, db
 
 
 class BaseTestCase(unittest.TestCase):
@@ -17,7 +17,17 @@ class BaseTestCase(unittest.TestCase):
         self.app = self.create_app()
         self.client = self.app.test_client()
 
+        with self.app.app_context():
+            db.drop_all()
+            db.create_all()
+
         self.load_fixtures()
+
+    def tearDown(self):
+        """Get rid of the database again after each test."""
+        with self.app.app_context():
+            db.drop_all()
+            db.session.rollback()
 
     def load_fixtures(self):
         pass
