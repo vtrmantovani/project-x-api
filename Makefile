@@ -23,13 +23,22 @@ clean:
  lint: flake8 check-python-import
 
  flake8:
-	@flake8 --show-source .
+	@flake8 --show-source --exclude migrations .
 
  check-python-import:
-	@isort --check
+	@isort --check  --skip migrations/
 
  isort:
-	@isort
+	@isort --skip migrations/
 
  outdated:
 	pip list --outdated
+
+ db_migrate:
+	flask db migrate
+
+ db_upgrade:
+	flask db upgrade
+
+ db_downgrade:
+	flask db downgrade

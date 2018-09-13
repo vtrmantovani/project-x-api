@@ -1,9 +1,18 @@
 import logging
 import os
 import sys
+
 from flask import Flask
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+
 from pxa.utils.api_errors import install_error_handlers
+
+db = SQLAlchemy(session_options={'autoflush': False})
+
 logger = logging.getLogger(__name__)
+
+migrate = Migrate()
 
 
 def configure_logger(app):
@@ -20,6 +29,11 @@ def create_app(config_var=os.getenv('DEPLOY_ENV', 'Development')):
 
     # configure logger
     configure_logger(app)
+
+    # init database
+    db.init_app(app)
+    _module_dir = os.path.dirname(os.path.abspath(__file__))
+    migrate.init_app(app, db, directory=os.path.join(_module_dir, '..', 'migrations'))  # noqa
 
     # register Blueprints
     from pxa.views.common import bp_common

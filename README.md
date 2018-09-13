@@ -6,6 +6,7 @@ This project search links on websites.
 
 ## Dependencies
  - [Python 3.7](https://www.python.org/downloads/)
+ - [MySQL 5.7](https://www.mysql.com/downloads/)
  
 ## Install dependencies
 
