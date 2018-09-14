@@ -1,0 +1,2 @@
+class WebsiteBackendException(Exception):
+    pass

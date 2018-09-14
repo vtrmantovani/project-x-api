@@ -1,0 +1,39 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.19.1]
+    method: GET
+    uri: http://vtrmantovani.com.br/
+  response:
+    body: {string: ''}
+    headers:
+      Content-Length: ['0']
+      Date: ['Fri, 14 Sep 2018 02:35:03 GMT']
+      Location: ['http://vtrmantovani.com/']
+      Server: [Microsoft-IIS/8.5]
+      X-Powered-By: [ASP.NET]
+    status: {code: 301, message: Moved Permanently}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.19.1]
+    method: GET
+    uri: http://vtrmantovani.com/
+  response:
+    body: {string: ""}
+    headers:
+      Connection: [keep-alive]
+      Content-Length: ['5389']
+      Content-Type: [text/html; charset=utf-8]
+      Date: ['Fri, 14 Sep 2018 02:35:04 GMT']
+      Server: [gunicorn/19.5.0]
+      Via: [1.1 vegur]
+    status: {code: 200, message: OK}
+version: 1

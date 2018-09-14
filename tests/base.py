@@ -1,11 +1,12 @@
 import unittest
 
 from parameterized import parameterized
+from vcr_unittest import VCRTestCase
 
 from pxa import create_app, db
 
 
-class BaseTestCase(unittest.TestCase):
+class BaseTestCase(VCRTestCase, unittest.TestCase):
 
     def create_app(self):
         app = create_app('Testing')

@@ -8,6 +8,10 @@ class BaseConfig(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('PXA_DB_URI', 'sqlite:///:memory:')  # noqa
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
+    SECONDS = 60
+    MINUTES = SECONDS * 60
+    TIMEOUT_WEBSITE = int(os.environ.get('TIMEOUT_WEBSITE', 1 * MINUTES))
+
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
