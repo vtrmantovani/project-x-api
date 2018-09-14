@@ -2,11 +2,15 @@ import logging
 import os
 import sys
 
+from celery import Celery
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from pxa.utils.api_errors import install_error_handlers
+
+
+celery = Celery()
 
 db = SQLAlchemy(session_options={'autoflush': False})
 
@@ -29,6 +33,9 @@ def create_app(config_var=os.getenv('DEPLOY_ENV', 'Development')):
 
     # configure logger
     configure_logger(app)
+
+    # configure celery
+    celery.config_from_object(app.config)
 
     # init database
     db.init_app(app)

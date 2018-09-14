@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: python:3.6
+      - image: redis:4.0.11
     working_directory: "~/pxa/"
     steps:
       - checkout

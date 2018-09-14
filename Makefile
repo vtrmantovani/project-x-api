@@ -20,6 +20,9 @@ clean:
  run:
 	FLASK_ENV=development flask run --reload
 
+ run-worker:
+	celery -A pxa.celery_worker:celery  worker --concurrency=1 --loglevel=DEBUG
+
  lint: flake8 check-python-import
 
  flake8:

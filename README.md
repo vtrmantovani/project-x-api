@@ -7,6 +7,7 @@ This project search links on websites.
 ## Dependencies
  - [Python 3.6](https://www.python.org/downloads/)
  - [MySQL 5.7](https://www.mysql.com/downloads/)
+ - [Redis 4.0](https://redis.io/download)
  
 ## Install dependencies
 
@@ -19,11 +20,26 @@ This project search links on websites.
     make requirements-dev
     ```
 
-## Run the project
+## Run on development environment
+
+### Run the api
 
 ```
 make run
 ```
+
+### Run worker
+
+ 1. Start Redis:
+    ```
+    docker-compose up
+    ```
+    
+ 2. Start worker:
+    ```
+    make run-worker
+    ```
+
 ## Run the tests
 
 ```
