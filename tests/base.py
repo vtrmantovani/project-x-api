@@ -1,5 +1,7 @@
 import unittest
 
+from parameterized import parameterized
+
 from pxa import create_app, db
 
 
@@ -31,3 +33,9 @@ class BaseTestCase(unittest.TestCase):
 
     def load_fixtures(self):
         pass
+
+    def custom_name_func(testcase_func, param_num, param):
+        return "%s_%s" % (
+            testcase_func.__name__,
+            parameterized.to_safe_name("_".join(str(x) for x in param.args)),
+        )

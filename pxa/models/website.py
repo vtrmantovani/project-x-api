@@ -1,10 +1,10 @@
 import datetime
 import enum
-import re
 
 from sqlalchemy.orm import validates
 
 from pxa import db
+from pxa.utils.validators import is_valid_url
 
 
 class Website(db.Model):
@@ -29,15 +29,9 @@ class Website(db.Model):
                            onupdate=datetime.datetime.utcnow,
                            nullable=False)
 
-    def _is_url(self, value):
-        regex = re.compile(r'^(?:http)s?://', re.IGNORECASE)
-        return re.match(regex, value)
-
     @validates('url')
     def validate_url(self, key, value):
-        if not isinstance(value, str):
-            raise ValueError("Url need be string")
-        if not self._is_url(value):
+        if not is_valid_url(value):
             raise ValueError("Url need be a valid url")
 
         return value
