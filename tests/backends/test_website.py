@@ -1,5 +1,6 @@
 import mock
 import vcr
+from parameterized import parameterized
 from requests.exceptions import ConnectTimeout
 
 from pxa import db
@@ -116,3 +117,13 @@ class TestBackendWebsite(BaseTestCase):
         self.assertEqual(Website.query.count(), 1)
         self.assertEqual(website_db.status.value, 'ERROR')
         self.assertEqual(website_db.status_desc, 'Error')  # noqa
+
+    @parameterized.expand([
+        ("http://vtrmantovani.com.br", True),
+        ("http://ibm.com.br", False),
+    ], testcase_func_name=BaseTestCase.custom_name_func)
+    def test_check_if_website_exist(self, value, expected):
+        db.session.add(self.website)
+        db.session.commit()
+        website_backend = WebsiteBackend()
+        self.assertEquals(website_backend._check_if_website_exist(value), expected)  # noqa

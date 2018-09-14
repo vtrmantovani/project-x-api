@@ -38,3 +38,19 @@ def process_available_links(self, website_id):
             WebsiteBackend().failed_save_website_available_links(website, str(e))  # noqa
 
     logger.info("Task to process available links: ended. website_id={0}".format(website_id))  # noqa
+
+
+@celery.task(name='task.website_processing',
+             queue='pxa.website')
+def website_processing():
+
+    list_avalibes_websites = Website.query.filter(Website.status == Website.Status.NEW).all()  # noqa
+
+    if not list_avalibes_websites:
+        return
+
+    for avalibes_websites in list_avalibes_websites:
+        avalibes_websites.status = Website.Status.PROCESSING  # noqa
+        db.session.add(avalibes_websites)
+        db.session.commit()
+        process_available_links(avalibes_websites.id)

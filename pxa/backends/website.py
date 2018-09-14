@@ -24,6 +24,13 @@ class WebsiteBackend:
         db.session.add(website)
         db.session.commit()
 
+    def _check_if_website_exist(self, url):
+        website = Website.query.filter(Website.url == url).first()  # noqa
+        if website:
+            return True
+
+        return False
+
     def _get_response_website(self, website):
         try:
             url = website.url
@@ -58,7 +65,7 @@ class WebsiteBackend:
         if search_websites_response:
             for url_website in search_websites_response:
                 url_website = url_website['href']
-                if is_valid_url(url_website):
+                if is_valid_url(url_website) and self._check_if_website_exist(url_website) is False:  # noqa
                     self._save_website(url_website)
                     list_urls.append(url_website)
 

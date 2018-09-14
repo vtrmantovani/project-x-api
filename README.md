@@ -30,7 +30,7 @@ make run
 
 ### Run worker
 
- 1. Start Redis:
+ 1. Start redis:
     ```
     docker-compose up
     ```
@@ -38,6 +38,10 @@ make run
  2. Start worker:
     ```
     make run-worker
+    ```
+ 3. Start schedule:
+    ```
+    make run-schedule
     ```
 
 ## Run the tests

@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from pxa import db
 from pxa.models.website import Website
-from pxa.tasks import process_available_links
+from pxa.tasks import process_available_links, website_processing
 from pxa.tasks.exceptions import TasksException
 from tests.base import BaseTestCase
 
@@ -65,3 +65,20 @@ class TestTasks(BaseTestCase):
         self.assertEqual(website_db.status.value, 'ERROR')
         self.assertEqual(website_db.status_desc, 'Error')  # noqa
         self.assertEqual(mock_response.call_count, 1)
+
+    @mock.patch('pxa.backends.website.WebsiteBackend.save_website_available_links')  # noqa
+    def test_website_processing(self, mock_response):
+        website = Website()
+        website.url = "http://ibm.com.br"
+        website.status = Website.Status.NEW
+        db.session.add(website)
+        db.session.commit()
+
+        website_processing()
+        website_db = Website.query.filter(Website.url == website.url).first()  # noqa
+        self.assertEqual(website_db.status.value, "PROCESSING")
+        self.assertEqual(Website.query.count(), 2)
+
+    def test_website_processing_without_list(self):
+        result = website_processing()
+        self.assertEqual(result, None)

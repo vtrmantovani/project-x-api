@@ -1,6 +1,7 @@
 from celery import Celery
 
 from pxa import create_app
+from pxa.tasks import website_processing
 
 
 def create_celery(app):
@@ -24,3 +25,9 @@ def create_celery(app):
 
 flask_app = create_app()
 celery = create_celery(flask_app)
+
+
+@celery.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+
+    sender.add_periodic_task(60, website_processing, name='process website ever 1 minute')  # noqa
