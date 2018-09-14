@@ -5,14 +5,14 @@
 This project search links on websites.
 
 ## Dependencies
- - [Python 3.7](https://www.python.org/downloads/)
+ - [Python 3.6](https://www.python.org/downloads/)
  - [MySQL 5.7](https://www.mysql.com/downloads/)
  
 ## Install dependencies
 
- 1. Create one  virtualenv with python 3.7:
+ 1. Create one  virtualenv with python 3.6:
     ```
-    virtualenv -p python3.7 env
+    virtualenv -p python3.6 env
     ```
  2. Install Python dependencies:
     ```
