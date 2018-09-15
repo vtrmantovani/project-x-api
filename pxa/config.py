@@ -14,6 +14,8 @@ class BaseConfig(object):
     MINUTES = SECONDS * 60
     TIMEOUT_WEBSITE = int(os.environ.get('TIMEOUT_WEBSITE', 1 * MINUTES))
 
+    ELASTICSEARCH_HOST = os.environ.get('ELASTICSEARCH_HOST', 'localhost:9200')  # noqa
+
     BROKER_URL = os.environ.get('BROKER_URL')  # noqa
     CELERY_IGNORE_RESULT = True
     CELERY_RESULT_BACKEND = BROKER_URL

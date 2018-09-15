@@ -9,3 +9,4 @@ python-coveralls==2.9.1
 parameterized==0.6.1
 vcrpy-unittest==0.1.6
 mock==2.0.0
+freezegun==0.3.10

@@ -5,10 +5,12 @@ import sys
 from celery import Celery
 from flask import Flask
 from flask_migrate import Migrate
+from flask_elasticsearch import FlaskElasticsearch
 from flask_sqlalchemy import SQLAlchemy
 
 from pxa.utils.api_errors import install_error_handlers
 
+es = FlaskElasticsearch()
 
 celery = Celery()
 
@@ -36,6 +38,9 @@ def create_app(config_var=os.getenv('DEPLOY_ENV', 'Development')):
 
     # configure celery
     celery.config_from_object(app.config)
+
+    # configure elasticsearch
+    es.init_app(app)
 
     # init database
     db.init_app(app)

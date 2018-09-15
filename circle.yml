@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: python:3.6
       - image: redis:4.0.11
+      - image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
     working_directory: "~/pxa/"
     steps:
       - checkout

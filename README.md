@@ -8,6 +8,7 @@ This project search links on websites.
  - [Python 3.6](https://www.python.org/downloads/)
  - [MySQL 5.7](https://www.mysql.com/downloads/)
  - [Redis 4.0](https://redis.io/download)
+ - [Elasticsearch 6](https://www.elastic.co/downloads/elasticsearch)
  
 ## Install dependencies
 
@@ -30,7 +31,7 @@ make run
 
 ### Run worker
 
- 1. Start redis:
+ 1. Start redis and elasticsearch:
     ```
     docker-compose up
     ```
