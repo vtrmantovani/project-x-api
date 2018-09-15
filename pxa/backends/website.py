@@ -5,6 +5,7 @@ from requests.exceptions import ConnectionError
 
 from pxa import db, logger
 from pxa.backends.exceptions import WebsiteBackendException
+from pxa.models.no_sql.website import WebsiteNoSql
 from pxa.models.website import Website
 from pxa.utils.validators import is_valid_url
 
@@ -24,8 +25,8 @@ class WebsiteBackend:
         db.session.add(website)
         db.session.commit()
 
-    def _check_if_website_exist(self, url):
-        website = Website.query.filter(Website.url == url).first()  # noqa
+    def _check_if_website_exist_done(self, url):
+        website = Website.query.filter(Website.url==url).filter(Website.status == Website.Status.DONE).first()  # noqa
         if website:
             return True
 
@@ -62,15 +63,47 @@ class WebsiteBackend:
         if search_websites_response:
             for url_website in search_websites_response:
                 url_website = url_website['href']
-                if is_valid_url(url_website) and self._check_if_website_exist(url_website) is False:  # noqa
-                    self._save_website(url_website)
+                if is_valid_url(url_website):
                     list_urls.append(url_website)
 
         return list_urls
 
+    def _put_website_links_on_quee(self, list_urls):
+        for url_website in list_urls:
+            if is_valid_url(url_website):
+                self._save_website(url_website)
+
+    def _save_website_links(self, website, list_urls):
+        website_nosql = WebsiteNoSql()
+        body = {
+            'urls': list_urls
+        }
+
+        check_website_exist_done = self._check_if_website_exist_done(website.url) # noqa
+
+        if check_website_exist_done is False:
+            self._put_website_links_on_quee(list_urls)
+            website_nosql.create(website.id, body)
+        else:
+            website_done = Website.query\
+                .filter(Website.url == website.url)\
+                .filter(Website.status == Website.Status.DONE).first()
+            website_nosql_db = website_nosql.get(website_done.id)
+            if website_nosql_db:
+                if website_nosql_db['_source'] != body:
+                    self._put_website_links_on_quee(list_urls)
+                    website_nosql.create(website.id, body)
+                    website_nosql.update(website_done.id, body)
+                else:
+                    website_nosql.create(website.id, body)
+            else:
+                logger.error("Website NoSql not found: on website_id {0}".format(website_done.id) ) # noqa
+                raise WebsiteBackendException("Website NoSql not found")
+
     def save_website_available_links(self, website):
 
-        self._get_available_links(website)
+        list_urls = self._get_available_links(website)
+        self._save_website_links(website, list_urls)
 
         website_db = Website.query.filter(Website.id == website.id).first()
         website_db.status = Website.Status.DONE

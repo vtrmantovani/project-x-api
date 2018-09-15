@@ -27,8 +27,8 @@ class TestTasks(BaseTestCase):
         db.session.add(website)
         db.session.commit()
 
-    def test_process_available_links(self):
-
+    @mock.patch('pxa.backends.website.WebsiteBackend._save_website_links')
+    def test_process_available_links(self, mock_save_website):
         self.assertEqual(Website.query.count(), 1)
         with vcr.use_cassette('tests/fixtures/cassettes/test_process_available_links.yaml'):  # noqa
             process_available_links(1)
@@ -36,7 +36,6 @@ class TestTasks(BaseTestCase):
         website_db = Website.query.filter(Website.id == 1).first()  # noqa
 
         self.assertEqual(website_db.status.value, "DONE")
-        self.assertEqual(Website.query.count(), 3)
 
     def test_process_available_links_web_site_not_found(self):
         with self.assertRaises(TasksException) as error:
