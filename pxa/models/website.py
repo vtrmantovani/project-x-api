@@ -18,7 +18,7 @@ class Website(db.Model):
         ERROR = "ERROR"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    url = db.Column(db.String(255), index=True, nullable=False)
+    url = db.Column(db.String(2083), index=True, nullable=False)
     status = db.Column(db.Enum(Status), index=True, nullable=False)
     status_desc = db.Column(db.String(255), nullable=True)
     created_dt = db.Column(db.DateTime,
