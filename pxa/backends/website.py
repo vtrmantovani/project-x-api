@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from flask import current_app as app
-from requests.exceptions import ConnectionError, ConnectTimeout
+from requests.exceptions import ConnectionError
 
 from pxa import db, logger
 from pxa.backends.exceptions import WebsiteBackendException
@@ -46,9 +46,6 @@ class WebsiteBackend:
 
             return response.text
 
-        except ConnectTimeout as e:
-            logger.warning("ConnectTimeout on website {0} - {1}".format(url, str(e)))  # noqa
-            raise ConnectTimeout()
         except ConnectionError as e:
             logger.error("ConnectionError: on website {0} - {1}".format(url, str(e)))  # noqa
             raise WebsiteBackendException("ConnectionError on request")

@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from requests.exceptions import ConnectTimeout
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -54,3 +56,21 @@ def website_processing():
         db.session.add(avalibes_websites)
         db.session.commit()
         process_available_links(avalibes_websites.id)
+
+
+@celery.task(name='task.retry_process_available_links_processing',
+             queue='pxa.website')
+def retry_process_available_links_processing():
+    date_search = datetime.utcnow() - timedelta(minutes=60)
+
+    list_avalibes_websites = Website.query.\
+        filter(Website.status == Website.Status.PROCESSING)\
+        .filter(Website.updated_dt < date_search).all()
+
+    if not list_avalibes_websites:
+        return
+
+    for avalibes_websites in list_avalibes_websites:
+        avalibes_websites.status = Website.Status.NEW  # noqa
+        db.session.add(avalibes_websites)
+        db.session.commit()

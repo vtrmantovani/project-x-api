@@ -1,7 +1,5 @@
-import mock
 import vcr
 from parameterized import parameterized
-from requests.exceptions import ConnectTimeout
 
 from pxa import db
 from pxa.backends.exceptions import WebsiteBackendException
@@ -71,15 +69,6 @@ class TestBackendWebsite(BaseTestCase):
                 website_backend._get_available_links(self.website)
 
             self.assertEqual(str(error.exception),  "Response text without value")  # noqa
-
-    @mock.patch('pxa.backends.website.WebsiteBackend._get_response_website')
-    def test_get_available_links_with_connect_timeout(self, mock_response):
-        mock_response.side_effect = mock.Mock(side_effect=ConnectTimeout())
-        with self.assertRaises(ConnectTimeout):
-            website_backend = WebsiteBackend()
-            website_backend._get_available_links(self.website)
-
-        self.assertEqual(mock_response.call_count, 1)
 
     def test_get_available_links_with_connection_error(self):
         with vcr.use_cassette('tests/fixtures/cassettes/test_get_available_links_with_connection_error.yaml'):  # noqa

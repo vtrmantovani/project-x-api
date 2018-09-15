@@ -1,11 +1,16 @@
+from datetime import datetime
+
 import mock
 import vcr
+from freezegun import freeze_time
 from requests.exceptions import ConnectTimeout
 from sqlalchemy.exc import SQLAlchemyError
 
 from pxa import db
 from pxa.models.website import Website
-from pxa.tasks import process_available_links, website_processing
+from pxa.tasks import (process_available_links,
+                       retry_process_available_links_processing,
+                       website_processing)
 from pxa.tasks.exceptions import TasksException
 from tests.base import BaseTestCase
 
@@ -80,5 +85,30 @@ class TestTasks(BaseTestCase):
         self.assertEqual(Website.query.count(), 2)
 
     def test_website_processing_without_list(self):
+        website_db = Website.query.first()  # noqa
+        db.session.delete(website_db)
+        db.session.commit()
         result = website_processing()
+        self.assertEqual(result, None)
+
+    @freeze_time('2018-09-14 15:00:00')
+    def test_retry_process_available_links_processing(self):
+        website_db = Website.query.first()  # noqa
+        db.session.delete(website_db)
+        db.session.commit()
+
+        website = Website()
+        website.url = "http://ibm.com.br"
+        website.status = Website.Status.PROCESSING
+        website.updated_dt = datetime(2018, 9, 13, 14, 0)
+        db.session.add(website)
+        db.session.commit()
+
+        retry_process_available_links_processing()
+
+        website_db = Website.query.first()  # noqa
+        self.assertEqual(website_db.status.value, "NEW")
+
+    def test_retry_process_available_links_processing_without_list(self):
+        result = retry_process_available_links_processing()
         self.assertEqual(result, None)
