@@ -1,6 +1,7 @@
 # Project X  #
 [![CircleCI](https://circleci.com/gh/vtrmantovani/project-x-api.svg?style=svg)](https://circleci.com/gh/vtrmantovani/project-x-api)
 [![Coverage Status](https://coveralls.io/repos/github/vtrmantovani/project-x-api/badge.svg)](https://coveralls.io/github/vtrmantovani/project-x-api)
+[![Known Vulnerabilities](https://snyk.io/test/github/vtrmantovani/project-x-api/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/vtrmantovani/project-x-api?targetFile=requirements.txt)
 
 This project search links on websites.
 
