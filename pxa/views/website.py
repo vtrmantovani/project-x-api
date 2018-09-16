@@ -49,3 +49,45 @@ def get(p_website_id):
         raise BadRequestGeneric(description="Some problems in bd")
 
     return jsonify(website['_source'])
+
+
+@requires_api_key
+@requires_json
+@requires_fields_validation
+@bp_website.route('/search', methods=['POST'])
+def search():
+    r = request.json
+    status = r['status']
+    limit = r['limit']
+    offset = r['offset']
+    list_websites = []
+
+    try:
+        website_list = Website.query.filter(Website.status == status)\
+            .limit(limit).offset(offset).all()
+
+        total_itens = Website.query.filter(Website.status == status).count()
+        for website in website_list:
+            if website.status == Website.Status.DONE:
+                website_db = WebsiteNoSql()
+                website_no_sql = website_db.get(website.id)
+                if not website_no_sql:
+                    logger.error("Website not found in search website_id={}".format(website.id))  # noqa
+                    raise NotFound("Website id not found")
+
+                urls = website_no_sql['_source']
+                list_websites.append({
+                    'website_id': website.id,
+                    'website': website.url,
+                    'urls': urls['urls']
+                })
+            else:
+                list_websites.append({
+                    'website_id': website.id,
+                    'website': website.url
+                })
+    except ElasticsearchException as e:
+        logger.error("ElasticsearchException error in search website, Error: {0}".format(e))  # noqa
+        raise BadRequestGeneric(description="Some problems in bd")
+
+    return jsonify({'websites': list_websites, 'total_itens': total_itens})
