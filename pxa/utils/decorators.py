@@ -2,7 +2,9 @@ from functools import wraps
 
 from flask import current_app, g, request
 from itsdangerous import BadSignature
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Unauthorized, UnsupportedMediaType
+
+from pxa.utils.api_exceptions import BadRequestMissingParams
 
 
 def requires_api_key(f):
@@ -34,4 +36,27 @@ def requires_api_key(f):
 
         return f(*args, **kwargs)
 
+    return decorated
+
+
+def requires_json(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if request.mimetype not in ('application/json',):
+            raise UnsupportedMediaType(
+                "You must send a raw body in JSON format with the Content-Type"
+                " header properly set to application/json.")
+
+        return f(*args, **kwargs)
+
+    return decorated
+
+
+def requires_fields_validation(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except KeyError as e:
+            raise BadRequestMissingParams(e)
     return decorated
