@@ -5,9 +5,6 @@ from tests.base import BaseTestCase
 
 class TestViewCommonCase(BaseTestCase):
 
-    def setUp(self):
-        super(TestViewCommonCase, self).setUp()
-
     def test_healthcheck(self):
         response = self.client.get("/healthcheck")
         self.assertEqual(response.status_code, 200)
