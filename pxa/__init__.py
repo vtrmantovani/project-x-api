@@ -7,6 +7,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_elasticsearch import FlaskElasticsearch
 from flask_sqlalchemy import SQLAlchemy
+from itsdangerous import TimestampSigner
 
 from pxa.utils.api_errors import install_error_handlers
 
@@ -46,6 +47,8 @@ def create_app(config_var=os.getenv('DEPLOY_ENV', 'Development')):
     db.init_app(app)
     _module_dir = os.path.dirname(os.path.abspath(__file__))
     migrate.init_app(app, db, directory=os.path.join(_module_dir, '..', 'migrations'))  # noqa
+
+    app.signer = TimestampSigner(app.config['SIGNER_KEY'])
 
     # register Blueprints
     from pxa.views.common import bp_common

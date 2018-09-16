@@ -9,6 +9,7 @@ class BaseConfig(object):
     LOGS_LEVEL = logging.INFO
     SQLALCHEMY_DATABASE_URI = os.environ.get('PXA_DB_URI', 'sqlite:///:memory:')  # noqa
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SIGNER_KEY = os.environ.get('SIGNER_KEY', 'XPGK6ZnLSzpz5jGUdRY')
 
     SECONDS = 60
     MINUTES = SECONDS * 60
@@ -38,6 +39,10 @@ class TestingConfig(BaseConfig):
 
     CELERY_ALWAYS_EAGER = True
     CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+
+
+class StagingConfig(BaseConfig):
+    LOGS_LEVEL = logging.ERROR
 
 
 class ProductionConfig(BaseConfig):
