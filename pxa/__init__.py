@@ -53,6 +53,8 @@ def create_app(config_var=os.getenv('DEPLOY_ENV', 'Development')):
     # register Blueprints
     from pxa.views.common import bp_common
     app.register_blueprint(bp_common)
+    from pxa.views.website import bp_website
+    app.register_blueprint(bp_website)
 
     # install error handler for views
     error_codes = [400, 401, 403, 404, 405, 406, 408, 409, 410, 412, 415, 428,
