@@ -67,6 +67,8 @@ def search():
             .limit(limit).offset(offset).all()
 
         total_itens = Website.query.filter(Website.status == status).count()
+
+        list_urls = []
         for website in website_list:
             if website.status == Website.Status.DONE:
                 website_db = WebsiteNoSql()
@@ -76,16 +78,13 @@ def search():
                     raise NotFound("Website id not found")
 
                 urls = website_no_sql['_source']
-                list_websites.append({
-                    'website_id': website.id,
-                    'website': website.url,
-                    'urls': urls['urls']
-                })
-            else:
-                list_websites.append({
-                    'website_id': website.id,
-                    'website': website.url
-                })
+                list_urls = urls['urls']
+
+            list_websites.append({
+                'id': website.id,
+                'website': website.url,
+                'urls': list_urls
+            })
     except ElasticsearchException as e:
         logger.error("ElasticsearchException error in search website, Error: {0}".format(e))  # noqa
         raise BadRequestGeneric(description="Some problems in bd")

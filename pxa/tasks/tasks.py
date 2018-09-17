@@ -46,7 +46,7 @@ def process_available_links(self, website_id):
              queue='pxa.website')
 def website_processing():
 
-    list_avalibes_websites = Website.query.filter(Website.status == Website.Status.NEW).all()  # noqa
+    list_avalibes_websites = Website.query.filter(Website.status == Website.Status.NEW).limit(20).all()  # noqa
 
     if not list_avalibes_websites:
         return
