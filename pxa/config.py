@@ -43,7 +43,9 @@ class TestingConfig(BaseConfig):
 
 class StagingConfig(BaseConfig):
     LOGS_LEVEL = logging.ERROR
+    SQLALCHEMY_POOL_SIZE = 50
 
 
 class ProductionConfig(BaseConfig):
     LOGS_LEVEL = logging.ERROR
+    SQLALCHEMY_POOL_SIZE = 50
