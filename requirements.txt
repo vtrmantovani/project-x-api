@@ -1,4 +1,4 @@
-Flask==1.0.2
+Flask==2.2.5
 Flask-Elasticsearch==0.2.5
 Flask-SQLAlchemy==2.3.2
 Flask-Migrate==2.2.1
